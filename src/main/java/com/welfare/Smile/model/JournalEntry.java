@@ -1,0 +1,59 @@
+package com.welfare.Smile.model;
+
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+import java.time.LocalDate;
+
+@Document(collection = "journal_entries")
+public class JournalEntry {
+
+    @Id
+    private String id;
+
+    private String title;
+    private String content;
+    private LocalDate date;
+
+    public JournalEntry() {}
+
+    public JournalEntry(String title, String content, LocalDate date) {
+        this.title = title;
+        this.content = content;
+        this.date = date;
+    }
+
+    // Getters and Setters
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public LocalDate getDate() {
+        return date;
+    }
+
+    public void setDate(LocalDate date) {
+        this.date = date;
+    }
+}
