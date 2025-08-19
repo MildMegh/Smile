@@ -21,7 +21,7 @@ public class HealthCheck {
     public ResponseEntity<String> healthCheck() {
         StringBuilder status = new StringBuilder();
 
-        // ✅ Database (MongoDB) check
+        // ✅ MongoDB check
         try {
             mongoTemplate.executeCommand("{ ping: 1 }");
             status.append("DB: OK | ");
@@ -29,26 +29,20 @@ public class HealthCheck {
             status.append("DB: FAIL | ");
         }
 
-        // ✅ Config file check (from classpath)
+        // ✅ Config file check
         try {
             ClassPathResource resource = new ClassPathResource("config.json");
-            if (resource.exists()) {
-                status.append("Config: OK | ");
-            } else {
-                status.append("Config: MISSING | ");
-            }
+            status.append(resource.exists() ? "Config: OK | " : "Config: MISSING | ");
         } catch (Exception e) {
             status.append("Config: ERROR | ");
         }
 
-        // ✅ External API check (your own API on localhost)
+        // ✅ API check
         try {
-            // You can change the URL to an existing endpoint from your app, such as /journals
-            ResponseEntity<String> res = restTemplate.getForEntity("http://localhost:8082/journals", String.class);
+            ResponseEntity<String> res = restTemplate.getForEntity("http://localhost:8082/api/v1/journal", String.class);
             status.append(res.getStatusCode().is2xxSuccessful() ? "API: OK" : "API: FAIL");
         } catch (Exception e) {
             status.append("API: ERROR (" + e.getClass().getSimpleName() + ")");
-            e.printStackTrace();
         }
 
         return ResponseEntity.ok(status.toString());
