@@ -30,8 +30,9 @@ steps:
       git config --global user.email "buildagent@mycompany.com"
       git config --global user.name "Build Agent"
       
-      echo "##[section]Setting remote with token"
-      git remote set-url origin https://$(System.AccessToken)@$(Build.Repository.Uri)
+      echo "##[section]Setting remote with GitHub token"
+      REPO_URL=$(echo $(Build.Repository.Uri) | sed -e 's#https://##')
+      git remote set-url origin https://$(GITHUB_TOKEN)@${REPO_URL}
       
       echo "##[section]Checking out source branch"
       git checkout -B $(Build.SourceBranchName)
@@ -43,5 +44,5 @@ steps:
       echo "##[section]Pushing changes"
       git push origin $(Build.SourceBranchName)
     env:
-      System.AccessToken: $(System.AccessToken)
+      GITHUB_TOKEN: $(GITHUB_TOKEN)
     displayName: 'Commit & Push changes back to Git'
