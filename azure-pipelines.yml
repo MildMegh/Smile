@@ -11,7 +11,6 @@ steps:
       jdkArchitectureOption: 'x64'
       jdkSourceOption: 'PreInstalled'
 
-
   - task: Maven@3
     inputs:
       mavenPomFile: 'pom.xml'
@@ -30,19 +29,19 @@ steps:
       echo "##[section]Configuring Git"
       git config --global user.email "buildagent@mycompany.com"
       git config --global user.name "Build Agent"
-
+      
       echo "##[section]Setting remote with token"
-      git remote set-url origin https://$(System.AccessToken)@dev.azure.com/ORG_NAME/PROJECT/_git/REPO
-
-      echo "##[section]Checking branch"
-      git checkout $(Build.SourceBranchName)
-
+      git remote set-url origin https://$(System.AccessToken)@$(Build.Repository.Uri)
+      
+      echo "##[section]Checking out source branch"
+      git checkout -B $(Build.SourceBranchName)
+      
       echo "##[section]Committing changes"
       git add .
       git commit -m "Automated changes from pipeline $(Build.BuildId)" || echo "No changes to commit"
-
+      
       echo "##[section]Pushing changes"
-      git push origin HEAD:$(Build.SourceBranchName)
+      git push origin $(Build.SourceBranchName)
     env:
       System.AccessToken: $(System.AccessToken)
     displayName: 'Commit & Push changes back to Git'
